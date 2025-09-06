@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  app:
+    image: events-face
+    container_name: events_face
+    command: runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - migrate
+
+  create_superuser:
+    image: events-face
+    restart: on-failure
+    command: create_cuperuser
+    working_dir: /app
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - migrate
+
+  db:
+    image: postgres:17
+    container_name: events_db
+    restart: always
+    env_file:
+      - ./.env.db
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    image: events-face
+    restart: on-failure
+    command: migrate
+    working_dir: /app
+    env_file:
+      - ./.env.prod
+    depends_on:
+      db:
+        condition: service_healthy
