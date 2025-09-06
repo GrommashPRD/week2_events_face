@@ -50,3 +50,9 @@ curl --location --request POST 'http://127.0.0.1:8000/api/auth/logout/' \
 --header 'Authorization: Bearer <YOUR TOKEN>' \
 --data ''
 ```
+
+## Система синхронизации Events.
+1. `python manage.py events_sync --all` - Синхронизация всех ивентов. (Первоначальная синхронизация)
+2. `python manage.py events_sync --date YY-MM-DD` - Синхронизация только тех ивентов, \
+у которых дата проведения равна указанной.
+3. `python manage.py events_sync` - Синхронизация по дате изменения последнего синхронизованного ивента.
